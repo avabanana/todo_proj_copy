@@ -36,6 +36,7 @@ struct ContentView: View {
                     if toDoItem.isImportant {
                         Text("‼️" + toDoItem.title)
                         Text("Change 1")
+                        Text("Change 2")
                     } else {
                         Text(toDoItem.title)
                     }
