@@ -35,13 +35,8 @@ struct ContentView: View {
                 ForEach(toDos) { toDoItem in
                     if toDoItem.isImportant {
                         Text("‼️" + toDoItem.title)
-                        Text("Change 1")
-                        Text("Change 2")
-                        Text("Change 3")
-                        Text("New Change - Ava")
                     } else {
                         Text(toDoItem.title)
-                        Text("test change - Krisha")
                     }
                 }
                 .onDelete(perform: deleteToDo)
