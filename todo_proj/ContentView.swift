@@ -12,6 +12,7 @@ struct ContentView: View {
     //timer stuff
     @State private var timeRemaining = 25*60 //in seconds
     @State private var timerRunning = false
+    @State private var onBreak = false
     //timer publisher
     let timer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
@@ -23,11 +24,20 @@ struct ContentView: View {
     var body: some View {
             VStack {
                 //pomodoro timer
+                //img or character
                 Image("timer")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                //test fro break or work time
+                if onBreak{
+                    Text("Break time!")
+                }else{
+                    Text("Time to lock in >:)")
+                }
+                //time display
                 Text(formatTime(seconds: timeRemaining))
                     .padding()
+                //pause button
                 Button {
                     if timerRunning{
                         timerRunning = false
@@ -41,6 +51,13 @@ struct ContentView: View {
                         Text("Start")
                     }
                 }
+                //reset button
+                Button {
+                    timerRunning = false
+                    timeRemaining = 25*60
+                }label: {
+                    Text("Reset")                }
+
                 //tasks
                 List {
                     ForEach(toDos) { toDoItem in
@@ -65,8 +82,23 @@ struct ContentView: View {
 
             }
             .onReceive(timer){ _ in
-                if timerRunning && timeRemaining > 0{
-                    timeRemaining -= 1
+                if timerRunning {
+                    if timeRemaining > 0 {
+                        timeRemaining -= 1
+                    } else {
+                        //alert
+                        
+                        //break
+                        if !onBreak{
+                            onBreak = true
+                            timeRemaining = 5*60
+                        }else{
+                            onBreak = false
+                            timeRemaining = 25*60
+
+                        }
+                        
+                    }
                 }
             }
         
