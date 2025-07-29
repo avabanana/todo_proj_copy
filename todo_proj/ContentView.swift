@@ -13,12 +13,30 @@ struct ContentView: View {
     @Query var toDos: [ToDoItem]
     @Environment(\.modelContext) var modelContext
     var body: some View {
-        VStack {
-            HStack {
-                Text("To Do List")
-                    .font(.system(size: 40))
-                    .fontWeight(.black)
-                Spacer()
+            VStack {
+                //pomodoro timer
+                Image("timer")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                Text("placeholder for time display")
+                    .padding()
+                Button {
+                    /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
+                }label: {
+                    Text("pause/start")
+                }
+                //tasks
+                List {
+                    ForEach(toDos) { toDoItem in
+                        if toDoItem.isImportant {
+                            Text("‼️" + toDoItem.title)
+                        } else {
+                            Text(toDoItem.title)
+                        }
+                    }
+                    .onDelete(perform: deleteToDo)
+                    .listStyle(.plain)
+                }
                 Button {
                     withAnimation {
                         showNewTask = true
@@ -28,21 +46,9 @@ struct ContentView: View {
                         .font(.title)
                         .fontWeight(.bold)
                 }
+
             }
-            .padding()
-            Spacer()
-            List {
-                ForEach(toDos) { toDoItem in
-                    if toDoItem.isImportant {
-                        Text("‼️" + toDoItem.title)
-                    } else {
-                        Text(toDoItem.title)
-                    }
-                }
-                .onDelete(perform: deleteToDo)
-                .listStyle(.plain)
-            }
-        }
+        
         if showNewTask {
             NewToDoView(showNewTask: $showNewTask, toDoItem: ToDoItem(title: "", isImportant: false))
         }
