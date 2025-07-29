@@ -195,7 +195,7 @@
 					};
 				};
 			};
-			buildConfigurationList = BD9157B72E37E3300090C28A /* Build configuration list for PBXProject "todo_proj" */;
+			buildConfigurationList = BD9157B72E37E3300090C28A /* Build configuration list for PBXProject "todo_proj copy" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -408,6 +408,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = pomotrackerApp;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -435,6 +436,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = pomotrackerApp;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -524,7 +526,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		BD9157B72E37E3300090C28A /* Build configuration list for PBXProject "todo_proj" */ = {
+		BD9157B72E37E3300090C28A /* Build configuration list for PBXProject "todo_proj copy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BD9157DD2E37E3320090C28A /* Debug */,
