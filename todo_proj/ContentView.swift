@@ -9,6 +9,14 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    //timer stuff
+    @State private var timeRemaining = 25*60 //in seconds
+    @State private var timerRunning = false
+    //timer publisher
+    let timer = Timer.publish(every: 1, on: .main, in: .common)
+        .autoconnect()
+    
+    //to do list stuff
     @State private var showNewTask = false
     @Query var toDos: [ToDoItem]
     @Environment(\.modelContext) var modelContext
@@ -18,12 +26,20 @@ struct ContentView: View {
                 Image("timer")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                Text("placeholder for time display")
+                Text(formatTime(seconds: timeRemaining))
                     .padding()
                 Button {
-                    /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
+                    if timerRunning{
+                        timerRunning = false
+                    }else{
+                        timerRunning = true
+                    }
                 }label: {
-                    Text("pause/start")
+                    if timerRunning{
+                        Text("Pause")
+                    } else{
+                        Text("Start")
+                    }
                 }
                 //tasks
                 List {
@@ -48,11 +64,22 @@ struct ContentView: View {
                 }
 
             }
+            .onReceive(timer){ _ in
+                if timerRunning && timeRemaining > 0{
+                    timeRemaining -= 1
+                }
+            }
         
         if showNewTask {
             NewToDoView(showNewTask: $showNewTask, toDoItem: ToDoItem(title: "", isImportant: false))
         }
     }
+    func formatTime(seconds: Int) -> String{
+        let minutes = seconds/60
+        let displayedSeconds = seconds % 60
+        return String(format:"%02d:%02d", minutes, displayedSeconds)
+    }
+    
     func deleteToDo(at offsets: IndexSet) {
         for offset in offsets {
             let toDoItem = toDos[offset]
