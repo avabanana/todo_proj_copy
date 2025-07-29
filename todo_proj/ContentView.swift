@@ -41,6 +41,7 @@ struct ContentView: View {
                         Text("New Change - Ava")
                     } else {
                         Text(toDoItem.title)
+                        Text("test change - Krisha")
                     }
                 }
                 .onDelete(perform: deleteToDo)
