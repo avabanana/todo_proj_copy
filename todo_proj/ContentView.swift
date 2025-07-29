@@ -37,6 +37,7 @@ struct ContentView: View {
                         Text("‼️" + toDoItem.title)
                         Text("Change 1")
                         Text("Change 2")
+                        Text("Change 3")
                     } else {
                         Text(toDoItem.title)
                     }
