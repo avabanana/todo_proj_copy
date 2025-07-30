@@ -97,6 +97,8 @@ struct ContentView: View {
                     } else {
                         //alert
                         playSound()
+                        //stop timer
+                        timerRunning = false
                         //break
                         if !onBreak{
                             onBreak = true
