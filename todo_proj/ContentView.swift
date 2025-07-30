@@ -7,24 +7,66 @@
 
 import SwiftUI
 import SwiftData
+import AVFoundation
 
 struct ContentView: View {
+    //timer stuff
+    @State private var timeRemaining = 25*60 //in seconds
+    @State private var timerRunning = false
+    @State private var onBreak = false
+    @State private var audioPlayer: AVAudioPlayer?
+    //timer publisher
+    let timer = Timer.publish(every: 1, on: .main, in: .common)
+        .autoconnect()
+    
+    //to do list stuff
     @State private var showNewTask = false
     @Query var toDos: [ToDoItem]
     @Environment(\.modelContext) var modelContext
     var body: some View {
             VStack {
                 //pomodoro timer
+                //img or character
                 Image("timer")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                Text("placeholder for time display")
-                    .padding()
-                Button {
-                    /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
-                }label: {
-                    Text("pause/start")
+                //test fro break or work time
+                if onBreak{
+                    Text("Break time!")
+                }else{
+                    Text("Time to lock in >:)")
                 }
+                //time display
+                Text(formatTime(seconds: timeRemaining))
+                    .padding()
+                //pause button
+                Button {
+                    if timerRunning{
+                        timerRunning = false
+                    }else{
+                        timerRunning = true
+                    }
+                }label: {
+                    if timerRunning{
+                        Text("Pause")
+                    } else{
+                        Text("Start")
+                    }
+                }
+                //reset button
+                Button {
+                    timerRunning = false
+                    timeRemaining = 25*60
+                }label: {
+                    Text("Reset")
+                }
+                //skip button
+                Button {
+                    skipTimer()
+                }label: {
+                    Text("Skip")
+                }
+
                 //tasks
                 List {
                     ForEach(toDos) { toDoItem in
@@ -48,11 +90,59 @@ struct ContentView: View {
                 }
 
             }
+            .onReceive(timer){ _ in
+                if timerRunning {
+                    if timeRemaining > 0 {
+                        timeRemaining -= 1
+                    } else {
+                        //alert
+                        playSound()
+                        //stop timer
+                        timerRunning = false
+                        //break
+                        if !onBreak{
+                            onBreak = true
+                            timeRemaining = 5*60
+                        }else{
+                            onBreak = false
+                            timeRemaining = 25*60
+
+                        }
+                        
+                    }
+                }
+            }
         
         if showNewTask {
             NewToDoView(showNewTask: $showNewTask, toDoItem: ToDoItem(title: "", isImportant: false))
         }
     }
+    func formatTime(seconds: Int) -> String{
+        let minutes = seconds/60
+        let displayedSeconds = seconds % 60
+        return String(format:"%02d:%02d", minutes, displayedSeconds)
+    }
+    
+    func playSound() {
+        guard let soundURL = Bundle.main.url(forResource: "ding", withExtension: "mp3") else {
+            print("Sound file not found!")
+            return
+        }
+
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
+        } catch {
+            print("Failed to play sound: \(error.localizedDescription)")
+        }
+    }
+    
+    func skipTimer(){
+        timeRemaining = 0
+    }
+
+    
     func deleteToDo(at offsets: IndexSet) {
         for offset in offsets {
             let toDoItem = toDos[offset]
