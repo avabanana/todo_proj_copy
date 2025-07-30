@@ -10,6 +10,8 @@ import SwiftData
 import AVFoundation
 
 struct ContentView: View {
+    @State private var tasks: [Task] = []
+  
     //timer stuff
     @State private var timeRemaining = 25*60 //in seconds
     @State private var timerRunning = false
@@ -82,14 +84,24 @@ struct ContentView: View {
                 Button {
                     withAnimation {
                         showNewTask = true
-                    }
-                } label: {
-                    Text("+")
-                        .font(.title)
-                        .fontWeight(.bold)
-                }
 
+                    }
+                }
             }
+
+             Grid {
+                ForEach($tasks) { $task in
+                    GridRow {
+                        TextField("Enter task...", text: $task.name)
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                            .padding(.vertical)
+            
+            Button("Add Tasks", systemImage: "plus") {
+                tasks.append(Task(name: ""))
+            }
+
             .onReceive(timer){ _ in
                 if timerRunning {
                     if timeRemaining > 0 {
@@ -148,10 +160,10 @@ struct ContentView: View {
             let toDoItem = toDos[offset]
             modelContext.delete(toDoItem)
         }
+        .padding()
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: ToDoItem.self, inMemory: true)
 }
