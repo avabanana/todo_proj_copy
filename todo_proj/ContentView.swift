@@ -9,9 +9,12 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @State private var showNewTask = false
+//    @State private var showNewTask = false
+    
     @Query var toDos: [ToDoItem]
     @Environment(\.modelContext) var modelContext
+    @State private var newTaskTitle = ""
+    
     var body: some View {
             VStack {
                 //pomodoro timer
@@ -25,34 +28,49 @@ struct ContentView: View {
                 }label: {
                     Text("pause/start")
                 }
-                //tasks
+                
+                //Divider()
+                
+                //task code
+                
                 List {
-                    ForEach(toDos) { toDoItem in
-                        if toDoItem.isImportant {
-                            Text("‼️" + toDoItem.title)
-                        } else {
-                            Text(toDoItem.title)
-                        }
+                    ForEach(toDos) { toDoItem in //why name changed from toDoItem to task?
+                        Text(toDoItem.title)
                     }
                     .onDelete(perform: deleteToDo)
-                    .listStyle(.plain)
+//                    .listStyle(.plain) //mv this outside List closing }??
                 }
-                Button {
-                    withAnimation {
-                        showNewTask = true
-                    }
-                } label: {
-                    Text("+")
-                        .font(.title)
-                        .fontWeight(.bold)
-                }
-
+                
+//                HStack {
+                   TextField("Add Task", text: $newTaskTitle)
+                       .textFieldStyle(.roundedBorder)
+                   Button(action: addTask) {
+                       Image(systemName: "plus.circle.fill") //huh cirlce?
+                           .font(.title2)
+                   }
+                   .disabled(newTaskTitle.trimmingCharacters(in: .whitespaces).isEmpty) //huh
+//               }
+//               .padding(.horizontal)
+//               .padding(.bottom)
+                
             }
+            .padding() //added padding
         
-        if showNewTask {
-            NewToDoView(showNewTask: $showNewTask, toDoItem: ToDoItem(title: "", isImportant: false))
-        }
+//        if showNewTask {
+//            NewToDoView(showNewTask: $showNewTask, toDoItem: ToDoItem(title: "", isImportant: false))
+//        }
     }
+    
+    func addTask() {
+        //how?
+        let trimmed = newTaskTitle.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+
+        let newToDo = ToDoItem(title: trimmed)
+        modelContext.insert(newToDo)
+        newTaskTitle = ""
+    }
+    
     func deleteToDo(at offsets: IndexSet) {
         for offset in offsets {
             let toDoItem = toDos[offset]

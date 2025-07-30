@@ -12,10 +12,11 @@ import SwiftData
 
 class ToDoItem {
     var title: String
-    var isImportant: Bool
+//    var isImportant: Bool
+    var id = UUID()
     
-    init(title: String, isImportant: Bool = false) {
+    init(title: String) {
         self.title = title
-        self.isImportant = isImportant
+//        self.isImportant = isImportant
     }
 }
