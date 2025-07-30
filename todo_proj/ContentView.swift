@@ -97,12 +97,19 @@ struct ContentView: View {
                             .font(.title)
                             .fontWeight(.bold)
                             .padding(.top)
-                        ForEach($tasks) { $task in
+                        ForEach(Array(tasks.enumerated()), id: \.element.id) { index, task in
                             GridRow {
-                                TextField("Enter task...", text: $task.name)
+                                TextField("Enter task...", text: $tasks[index].name)
                                     .padding()
                                     .background(Color(.systemGray6))
                                     .cornerRadius(8)
+                                
+                                Button(action: {
+                                    tasks.remove(at: index)
+                                }) {
+                                    Text("✔️")
+                                }
+                                .buttonStyle(PlainButtonStyle())
                             }
                             .padding(.horizontal)
                         }
