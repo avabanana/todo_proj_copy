@@ -24,12 +24,16 @@ struct ContentView: View {
     @Query var toDos: [ToDoItem]
     @Environment(\.modelContext) var modelContext
     var body: some View {
+        ZStack{
+            Color.orange.opacity(0.4)
+                    .ignoresSafeArea()
             VStack {
                 //pomodoro timer
                 //img or character
                 Image("timer")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .padding()
                 //test fro break or work time
                 if onBreak{
                     Text("Break time!")
@@ -38,35 +42,54 @@ struct ContentView: View {
                 }
                 //time display
                 Text(formatTime(seconds: timeRemaining))
+                    .fontWeight(.bold)
                     .padding()
-                //pause button
-                Button {
-                    if timerRunning{
+                    .font(.system(size: 60))
+                    .opacity(0.7)
+                    .foregroundColor(Color(red: 0.58, green: 0.78, blue: 0.675))
+                HStack{
+                    //pause button
+                    Button {
+                        if timerRunning{
+                            timerRunning = false
+                        }else{
+                            timerRunning = true
+                        }
+                    }label: {
+                        if timerRunning{
+                            Text("Pause")
+                        } else{
+                            Text("Start")
+                        }
+                    }
+                    .padding()
+                    .background(Circle().fill(Color(red: 0.58, green: 0.78, blue: 0.675)))
+                    .opacity(0.7)
+                    .foregroundColor(.black)
+                    //reset button
+                    Button {
                         timerRunning = false
-                    }else{
-                        timerRunning = true
+                        timeRemaining = 25*60
+                    }label: {
+                        Text("Reset")
                     }
-                }label: {
-                    if timerRunning{
-                        Text("Pause")
-                    } else{
-                        Text("Start")
+                    .padding()
+                    .background(Circle().fill(Color(red: 0.58, green: 0.78, blue: 0.675)))
+                    .opacity(0.7)
+                    .foregroundColor(.black)
+                    //skip button
+                    Button {
+                        skipTimer()
+                    }label: {
+                        Text("Skip")
                     }
+                    .padding()
+                    .background(Circle().fill(Color(red: 0.58, green: 0.78, blue: 0.675)))
+                    .opacity(0.7)
+                    .foregroundColor(.black)
                 }
-                //reset button
-                Button {
-                    timerRunning = false
-                    timeRemaining = 25*60
-                }label: {
-                    Text("Reset")
-                }
-                //skip button
-                Button {
-                    skipTimer()
-                }label: {
-                    Text("Skip")
-                }
-
+                
+                
                 //tasks
                 List {
                     ForEach(toDos) { toDoItem in
@@ -88,7 +111,7 @@ struct ContentView: View {
                         .font(.title)
                         .fontWeight(.bold)
                 }
-
+                
             }
             .onReceive(timer){ _ in
                 if timerRunning {
@@ -106,15 +129,16 @@ struct ContentView: View {
                         }else{
                             onBreak = false
                             timeRemaining = 25*60
-
+                            
                         }
                         
                     }
                 }
             }
-        
-        if showNewTask {
-            NewToDoView(showNewTask: $showNewTask, toDoItem: ToDoItem(title: "", isImportant: false))
+            
+            if showNewTask {
+                NewToDoView(showNewTask: $showNewTask, toDoItem: ToDoItem(title: "", isImportant: false))
+            }
         }
     }
     func formatTime(seconds: Int) -> String{
