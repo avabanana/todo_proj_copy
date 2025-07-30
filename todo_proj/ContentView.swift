@@ -10,8 +10,6 @@ import SwiftData
 import AVFoundation
 
 struct ContentView: View {
-    @State private var tasks: [Task] = []
-  
     //timer stuff
     @State private var timeRemaining = 25*60 //in seconds
     @State private var timerRunning = false
@@ -22,112 +20,124 @@ struct ContentView: View {
         .autoconnect()
     
     //to do list stuff
-    @State private var showNewTask = false
-    @Query var toDos: [ToDoItem]
-    @Environment(\.modelContext) var modelContext
+    @State private var tasks: [Task] = []
     var body: some View {
-            VStack {
-                //pomodoro timer
-                //img or character
-                Image("timer")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                //test fro break or work time
-                if onBreak{
-                    Text("Break time!")
-                }else{
-                    Text("Time to lock in >:)")
-                }
-                //time display
-                Text(formatTime(seconds: timeRemaining))
-                    .padding()
-                //pause button
-                Button {
-                    if timerRunning{
-                        timerRunning = false
+        ZStack{
+            Color.orange.opacity(0.4)
+                .ignoresSafeArea()
+            ScrollView{
+                VStack {
+                    //pomodoro timer
+                    //img or character
+                    Image("timer")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .padding()
+                    //test for break or work time
+                    if onBreak{
+                        Text("Break time!")
+                            .foregroundColor(.mint)
                     }else{
-                        timerRunning = true
+                        Text("Time to lock in >:)")
+                            .foregroundColor(Color(red: 0.322, green: 0.251, blue: 0.173))
                     }
-                }label: {
-                    if timerRunning{
-                        Text("Pause")
-                    } else{
-                        Text("Start")
-                    }
-                }
-                //reset button
-                Button {
-                    timerRunning = false
-                    timeRemaining = 25*60
-                }label: {
-                    Text("Reset")
-                }
-                //skip button
-                Button {
-                    skipTimer()
-                }label: {
-                    Text("Skip")
-                }
-
-                //tasks
-                List {
-                    ForEach(toDos) { toDoItem in
-                        if toDoItem.isImportant {
-                            Text("‼️" + toDoItem.title)
-                        } else {
-                            Text(toDoItem.title)
+                    //time display
+                    Text(formatTime(seconds: timeRemaining))
+                        .fontWeight(.bold)
+                        .padding()
+                        .font(.system(size: 60))
+                        .opacity(0.7)
+                        .foregroundColor(Color(red: 0.58, green: 0.78, blue: 0.675))
+                    HStack{
+                        //pause button
+                        Button {
+                            if timerRunning{
+                                timerRunning = false
+                            }else{
+                                timerRunning = true
+                            }
+                        }label: {
+                            if timerRunning{
+                                Text("Pause")
+                            } else{
+                                Text("Start")
+                            }
                         }
-                    }
-                    .onDelete(perform: deleteToDo)
-                    .listStyle(.plain)
-                }
-                Button {
-                    withAnimation {
-                        showNewTask = true
-
-                    }
-                }
-            }
-
-             Grid {
-                ForEach($tasks) { $task in
-                    GridRow {
-                        TextField("Enter task...", text: $task.name)
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
-                            .padding(.vertical)
-            
-            Button("Add Tasks", systemImage: "plus") {
-                tasks.append(Task(name: ""))
-            }
-
-            .onReceive(timer){ _ in
-                if timerRunning {
-                    if timeRemaining > 0 {
-                        timeRemaining -= 1
-                    } else {
-                        //alert
-                        playSound()
-                        //stop timer
-                        timerRunning = false
-                        //break
-                        if !onBreak{
-                            onBreak = true
-                            timeRemaining = 5*60
-                        }else{
-                            onBreak = false
+                        .padding()
+                        .background(Circle().fill(Color(red: 0.58, green: 0.78, blue: 0.675)))
+                        .opacity(0.7)
+                        .foregroundColor(.black)
+                        //reset button
+                        Button {
+                            timerRunning = false
                             timeRemaining = 25*60
-
+                        }label: {
+                            Text("Reset")
                         }
-                        
+                        .padding()
+                        .background(Circle().fill(Color(red: 0.58, green: 0.78, blue: 0.675)))
+                        .opacity(0.7)
+                        .foregroundColor(.black)
+                        //skip button
+                        Button {
+                            skipTimer()
+                        }label: {
+                            Text("Skip")
+                        }
+                        .padding()
+                        .background(Circle().fill(Color(red: 0.58, green: 0.78, blue: 0.675)))
+                        .opacity(0.7)
+                        .foregroundColor(.black)
+                    }
+                    //tasks
+                    Grid {
+                        ForEach($tasks) { $task in
+                            GridRow {
+                                TextField("Enter task...", text: $task.name)
+                                    .padding()
+                                    .background(Color(.systemGray6))
+                                    .cornerRadius(8)
+                                    .padding(.vertical)
+                                
+                                
+                                
+                                
+                                
+                            }
+                        }
+                    }
+                    Button("Add Tasks", systemImage: "plus") {
+                        tasks.append(Task(name: ""))
+                    }
+                    
+                }
+                .onReceive(timer){ _ in
+                    if timerRunning {
+                        if timeRemaining > 0 {
+                            timeRemaining -= 1
+                        } else {
+                            //alert
+                            playSound()
+                            //stop timer
+                            timerRunning = false
+                            //break
+                            if !onBreak{
+                                onBreak = true
+                                timeRemaining = 5*60
+                            }else{
+                                onBreak = false
+                                timeRemaining = 25*60
+                                
+                            }
+                            
+                        }
                     }
                 }
             }
-        
-        if showNewTask {
-            NewToDoView(showNewTask: $showNewTask, toDoItem: ToDoItem(title: "", isImportant: false))
+                    
         }
+        
+
     }
     func formatTime(seconds: Int) -> String{
         let minutes = seconds/60
@@ -140,7 +150,7 @@ struct ContentView: View {
             print("Sound file not found!")
             return
         }
-
+        
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
             audioPlayer?.prepareToPlay()
@@ -153,17 +163,11 @@ struct ContentView: View {
     func skipTimer(){
         timeRemaining = 0
     }
-
     
-    func deleteToDo(at offsets: IndexSet) {
-        for offset in offsets {
-            let toDoItem = toDos[offset]
-            modelContext.delete(toDoItem)
-        }
-        .padding()
-    }
+    
+    
+    
 }
-
 #Preview {
     ContentView()
 }
