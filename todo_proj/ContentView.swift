@@ -34,11 +34,13 @@ struct ContentView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .padding()
-                //test fro break or work time
+                //test for break or work time
                 if onBreak{
                     Text("Break time!")
+                        .foregroundColor(.mint)
                 }else{
                     Text("Time to lock in >:)")
+                        .foregroundColor(Color(red: 0.322, green: 0.251, blue: 0.173))
                 }
                 //time display
                 Text(formatTime(seconds: timeRemaining))
