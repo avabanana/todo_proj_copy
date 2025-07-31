@@ -36,7 +36,7 @@ struct ContentView: View {
                     //test for break or work time
                     if onBreak{
                         Text("Break time!")
-                            .foregroundColor(.mint)
+                            .foregroundColor(Color(red: 0.322, green: 0.251, blue: 0.173))
                     }else{
                         Text("Time to lock in >:)")
                             .foregroundColor(Color(red: 0.322, green: 0.251, blue: 0.173))
@@ -125,6 +125,12 @@ struct ContentView: View {
                     .opacity(0.7)
                     
                 }
+                .onAppear {
+                    loadTasks()
+                }
+                .onChange(of: tasks) { _ in
+                    saveTasks()
+                }
                 .onReceive(timer){ _ in
                     if timerRunning {
                         if timeRemaining > 0 {
@@ -153,6 +159,7 @@ struct ContentView: View {
         
 
     }
+    
     func formatTime(seconds: Int) -> String{
         let minutes = seconds/60
         let displayedSeconds = seconds % 60
@@ -178,7 +185,19 @@ struct ContentView: View {
         timeRemaining = 0
     }
     
-    
+    func saveTasks() {
+        if let encoded = try? JSONEncoder().encode(tasks) {
+            UserDefaults.standard.set(encoded, forKey: "SavedTasks")
+        }
+    }
+
+    func loadTasks() {
+        if let savedData = UserDefaults.standard.data(forKey: "SavedTasks") {
+            if let decoded = try? JSONDecoder().decode([Task].self, from: savedData) {
+                tasks = decoded
+            }
+        }
+    }
     
     
 }
