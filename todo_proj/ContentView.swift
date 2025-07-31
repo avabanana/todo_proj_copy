@@ -1,87 +1,109 @@
-//
-//  ContentView.swift
-//  todo_proj
-//
-//  Created by Scholar on 7/28/25.
-//
-
 import SwiftUI
 import SwiftData
 import AVFoundation
+import SpriteKit
 
 struct ContentView: View {
-    //timer stuff
-    @State private var timeRemaining = 25*60 //in seconds
+    // Timer state
+    @State private var timeRemaining = 25 * 60
     @State private var timerRunning = false
     @State private var onBreak = false
     @State private var audioPlayer: AVAudioPlayer?
-    //timer publisher
-    let timer = Timer.publish(every: 1, on: .main, in: .common)
-        .autoconnect()
-    
-    //to do list stuff
+    @State private var showBox = false
+
+    class CheerSceneHolder: ObservableObject {
+        let scene: CheerScene
+
+        init() {
+            self.scene = CheerScene(size: CGSize(width: 60, height: 80))
+        }
+    }
+
+    @StateObject private var sceneHolder = CheerSceneHolder()
+
+    // Timer publisher
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
+    // Tasks
     @State private var tasks: [Task] = []
+
+    // Optional ToDo (SwiftData)
+    @State private var showNewTask = false
+    @Environment(\.modelContext) var modelContext
+
     var body: some View {
-        ZStack{
+        ZStack {
             Color.orange.opacity(0.4)
                 .ignoresSafeArea()
-            ScrollView{
-                VStack {
-                    //pomodoro timer
-                    //img or character
-                    Image("timer")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding()
-                    //test for break or work time
-                    if onBreak{
+
+            ScrollView {
+                VStack(spacing: 20) {
+
+                    // SpriteKit character with text box
+                    ZStack {
+                        SpriteView(scene: sceneHolder.scene)
+                            .frame(width: 200, height: 240)
+                            .offset(y: 20)
+
+                        if showBox {
+                            VStack(spacing: 8) {
+                                Image("textBox1")
+                                    .resizable()
+                                    .frame(width: 150, height: 120)
+                                    .offset(x: -8, y: -8)
+                                    .cornerRadius(10)
+                                    .padding()
+                            }
+                            .offset(y: -80)
+                            .transition(.opacity)
+                            .animation(.easeInOut, value: showBox)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 300)
+
+                    // Work/break label
+                    if onBreak {
                         Text("Break time!")
                             .foregroundColor(.mint)
-                    }else{
+                    } else {
                         Text("Time to lock in >:)")
                             .foregroundColor(Color(red: 0.322, green: 0.251, blue: 0.173))
+                            .fontWeight(.bold)
                     }
-                    //time display
+
+                    // Timer countdown
                     Text(formatTime(seconds: timeRemaining))
                         .fontWeight(.bold)
-                        .padding()
                         .font(.system(size: 60))
                         .opacity(0.7)
                         .foregroundColor(Color(red: 0.58, green: 0.78, blue: 0.675))
-                    HStack{
-                        //pause button
+
+                    // Timer buttons
+                    HStack {
                         Button {
-                            if timerRunning{
-                                timerRunning = false
-                            }else{
-                                timerRunning = true
-                            }
-                        }label: {
-                            if timerRunning{
-                                Text("Pause")
-                            } else{
-                                Text("Start")
-                            }
+                            timerRunning.toggle()
+                        } label: {
+                            Text(timerRunning ? "Pause" : "Start")
                         }
                         .padding()
                         .background(Circle().fill(Color(red: 0.58, green: 0.78, blue: 0.675)))
                         .opacity(0.7)
                         .foregroundColor(.black)
-                        //reset button
+
                         Button {
                             timerRunning = false
-                            timeRemaining = 25*60
-                        }label: {
+                            timeRemaining = 25 * 60
+                        } label: {
                             Text("Reset")
                         }
                         .padding()
                         .background(Circle().fill(Color(red: 0.58, green: 0.78, blue: 0.675)))
                         .opacity(0.7)
                         .foregroundColor(.black)
-                        //skip button
+
                         Button {
                             skipTimer()
-                        }label: {
+                        } label: {
                             Text("Skip")
                         }
                         .padding()
@@ -89,82 +111,97 @@ struct ContentView: View {
                         .opacity(0.7)
                         .foregroundColor(.black)
                     }
-                    
-                    
-                    //tasks
-                    Grid {
+
+                    // Tasks section using Grid layout
+                    VStack(alignment: .leading) {
                         Text("Task List")
                             .font(.title)
                             .fontWeight(.bold)
                             .padding(.top)
-                        ForEach(Array(tasks.enumerated()), id: \.element.id) { index, task in
-                            GridRow {
-                                TextField("Enter task...", text: $tasks[index].name)
-                                    .padding()
-                                    .background(Color(.systemGray6))
-                                    .cornerRadius(8)
-                                
-                                Button(action: {
-                                    tasks.remove(at: index)
-                                }) {
-                                    Text("✔️")
+
+                        Grid {
+                            ForEach(Array(tasks.enumerated()), id: \.element.id) { index, task in
+                                GridRow {
+                                    TextField("Enter task...", text: $tasks[index].name)
+                                        .padding()
+                                        .background(Color(.systemGray6))
+                                        .cornerRadius(8)
+
+                                    Button(action: {
+                                        tasks.remove(at: index)
+                                    }) {
+                                        Text("✔️")
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
                                 }
-                                .buttonStyle(PlainButtonStyle())
+                                .padding(.horizontal)
                             }
-                            .padding(.horizontal)
                         }
+
+                        Button("Add Task", systemImage: "plus") {
+                            tasks.append(Task(name: ""))
+                        }
+                        .frame(height: 25)
+                        .frame(width: 120)
+                        .foregroundColor(.black)
+                        .background(Rectangle().fill(Color(red: 0.58, green: 0.78, blue: 0.675)))
+                        .cornerRadius(8)
+                        .opacity(0.7)
                     }
-                    Button("Add Tasks", systemImage: "plus") {
-                        tasks.append(Task(name: ""))
-                    }
-                    .frame(height: 25.0)
-                    .frame(width: 120.0)
-                    .foregroundColor(.black)
-                    .background(Rectangle().fill(Color(red: 0.58, green: 0.78, blue: 0.675)))
-                    .cornerRadius(8)
-                    .opacity(0.7)
-                    
+                    .padding()
                 }
-                .onReceive(timer){ _ in
-                    if timerRunning {
-                        if timeRemaining > 0 {
-                            timeRemaining -= 1
-                        } else {
-                            //alert
-                            playSound()
-                            //stop timer
-                            timerRunning = false
-                            //break
-                            if !onBreak{
-                                onBreak = true
-                                timeRemaining = 5*60
-                            }else{
-                                onBreak = false
-                                timeRemaining = 25*60
-                                
-                            }
-                            
-                        }
+                .frame(maxWidth: .infinity, minHeight: 320)
+                .padding(.horizontal, 20)
+            }
+        }
+        .onReceive(timer) { _ in
+            if timerRunning {
+                if timeRemaining > 0 {
+                    timeRemaining -= 1
+
+                    // Show text box at minute 12–13
+                    let secondsPassed = 730 // Replace with actual logic if needed
+                    if secondsPassed > 720 && secondsPassed < 780 {
+                        showBox = true
+                    } else {
+                        showBox = false
+                    }
+
+                } else {
+                    playSound()
+                    timerRunning = false
+                    if !onBreak {
+                        onBreak = true
+                        timeRemaining = 5 * 60
+
+                        // Stop animation on break frame
+                        sceneHolder.scene.stopAnimationAtBreakFrame()
+                    } else {
+                        onBreak = false
+                        timeRemaining = 25 * 60
+
+                        // Resume animation for work time
+                        sceneHolder.scene.startAnimation()
                     }
                 }
             }
-                    
         }
-        
+    }
 
-    }
-    func formatTime(seconds: Int) -> String{
-        let minutes = seconds/60
+    // MARK: - Utility Functions
+
+    func formatTime(seconds: Int) -> String {
+        let minutes = seconds / 60
         let displayedSeconds = seconds % 60
-        return String(format:"%02d:%02d", minutes, displayedSeconds)
+        return String(format: "%02d:%02d", minutes, displayedSeconds)
     }
-    
+
     func playSound() {
         guard let soundURL = Bundle.main.url(forResource: "ding", withExtension: "mp3") else {
             print("Sound file not found!")
             return
         }
-        
+
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
             audioPlayer?.prepareToPlay()
@@ -173,15 +210,8 @@ struct ContentView: View {
             print("Failed to play sound: \(error.localizedDescription)")
         }
     }
-    
-    func skipTimer(){
+
+    func skipTimer() {
         timeRemaining = 0
     }
-    
-    
-    
-    
-}
-#Preview {
-    ContentView()
 }

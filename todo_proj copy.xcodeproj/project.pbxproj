@@ -6,11 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		BD9157E92E37E3FF0090C28A /* NewToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9157E82E37E3FF0090C28A /* NewToDoView.swift */; };
-		BD9157EB2E37E6040090C28A /* ToDoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9157EA2E37E6040090C28A /* ToDoItem.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		BD9157CC2E37E3320090C28A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -32,8 +27,6 @@
 		BD9157BC2E37E3300090C28A /* todo_proj.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = todo_proj.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD9157CB2E37E3320090C28A /* todo_projTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = todo_projTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD9157D52E37E3320090C28A /* todo_projUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = todo_projUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		BD9157E82E37E3FF0090C28A /* NewToDoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewToDoView.swift; sourceTree = "<group>"; };
-		BD9157EA2E37E6040090C28A /* ToDoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -82,8 +75,6 @@
 		BD9157B32E37E3300090C28A = {
 			isa = PBXGroup;
 			children = (
-				BD9157EA2E37E6040090C28A /* ToDoItem.swift */,
-				BD9157E82E37E3FF0090C28A /* NewToDoView.swift */,
 				BD9157BE2E37E3300090C28A /* todo_proj */,
 				BD9157CE2E37E3320090C28A /* todo_projTests */,
 				BD9157D82E37E3320090C28A /* todo_projUITests */,
@@ -245,8 +236,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD9157EB2E37E6040090C28A /* ToDoItem.swift in Sources */,
-				BD9157E92E37E3FF0090C28A /* NewToDoView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
