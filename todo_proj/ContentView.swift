@@ -89,26 +89,40 @@ struct ContentView: View {
                         .opacity(0.7)
                         .foregroundColor(.black)
                     }
+                    
+                    
                     //tasks
                     Grid {
-                        ForEach($tasks) { $task in
+                        Text("Task List")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .padding(.top)
+                        ForEach(Array(tasks.enumerated()), id: \.element.id) { index, task in
                             GridRow {
-                                TextField("Enter task...", text: $task.name)
+                                TextField("Enter task...", text: $tasks[index].name)
                                     .padding()
                                     .background(Color(.systemGray6))
                                     .cornerRadius(8)
-                                    .padding(.vertical)
                                 
-                                
-                                
-                                
-                                
+                                Button(action: {
+                                    tasks.remove(at: index)
+                                }) {
+                                    Text("✔️")
+                                }
+                                .buttonStyle(PlainButtonStyle())
                             }
+                            .padding(.horizontal)
                         }
                     }
                     Button("Add Tasks", systemImage: "plus") {
                         tasks.append(Task(name: ""))
                     }
+                    .frame(height: 25.0)
+                    .frame(width: 120.0)
+                    .foregroundColor(.black)
+                    .background(Rectangle().fill(Color(red: 0.58, green: 0.78, blue: 0.675)))
+                    .cornerRadius(8)
+                    .opacity(0.7)
                     
                 }
                 .onReceive(timer){ _ in
