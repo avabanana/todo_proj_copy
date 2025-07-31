@@ -11,6 +11,7 @@ struct ContentView: View {
     @State private var audioPlayer: AVAudioPlayer?
     @State private var showBox = false
 
+    // initialize the rabbit jumping
     class CheerSceneHolder: ObservableObject {
         let scene: CheerScene
 
@@ -21,15 +22,11 @@ struct ContentView: View {
 
     @StateObject private var sceneHolder = CheerSceneHolder()
 
-    // Timer publisher
+    // keep track of the time
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     // Tasks
     @State private var tasks: [Task] = []
-
-    // Optional ToDo (SwiftData)
-    @State private var showNewTask = false
-    @Environment(\.modelContext) var modelContext
 
     var body: some View {
         ZStack {
@@ -37,7 +34,7 @@ struct ContentView: View {
                 .ignoresSafeArea()
 
             ScrollView {
-                VStack(spacing: 20) {
+                VStack() {
 
                     // SpriteKit character with text box
                     ZStack {
@@ -46,39 +43,34 @@ struct ContentView: View {
                             .offset(y: 20)
 
                         if showBox {
-                            VStack(spacing: 8) {
+                            VStack() {
+                                // put in the text box
                                 Image("textBox1")
                                     .resizable()
                                     .frame(width: 150, height: 120)
-                                    .offset(x: -8, y: -8)
-                                    .cornerRadius(10)
-                                    .padding()
+                                    .cornerRadius(4)
                             }
-                            .offset(y: -80)
+                            .offset(x: -75, y: -65)
                             .transition(.opacity)
                             .animation(.easeInOut, value: showBox)
                         }
                     }
+                    // effectively padding
                     .frame(maxWidth: .infinity, minHeight: 300)
 
-                    // Work/break label
-                    if onBreak {
-                        Text("Break time!")
-                            .foregroundColor(.mint)
-                    } else {
-                        Text("Time to lock in >:)")
-                            .foregroundColor(Color(red: 0.322, green: 0.251, blue: 0.173))
-                            .fontWeight(.bold)
-                    }
+                    // work and break label
+                    Text(onBreak ? "Break time!" : "Time to lock in >:)")
+                        .foregroundColor(onBreak ? .mint : Color(red: 0.322, green: 0.251, blue: 0.173))
+                        .fontWeight(onBreak ? .regular : .bold)
 
-                    // Timer countdown
+                    // timer countdown (25 min, 5 min)
                     Text(formatTime(seconds: timeRemaining))
                         .fontWeight(.bold)
                         .font(.system(size: 60))
                         .opacity(0.7)
                         .foregroundColor(Color(red: 0.58, green: 0.78, blue: 0.675))
 
-                    // Timer buttons
+                    // timer buttons
                     HStack {
                         Button {
                             timerRunning.toggle()
@@ -112,12 +104,13 @@ struct ContentView: View {
                         .foregroundColor(.black)
                     }
 
-                    // Tasks section using Grid layout
+                    // have the list of tasks with padding
                     VStack(alignment: .leading) {
                         Text("Task List")
                             .font(.title)
                             .fontWeight(.bold)
                             .padding(.top)
+                            .frame(maxWidth: .infinity, alignment: .center)
 
                         Grid {
                             ForEach(Array(tasks.enumerated()), id: \.element.id) { index, task in
@@ -137,16 +130,18 @@ struct ContentView: View {
                                 .padding(.horizontal)
                             }
                         }
-
+                        // add task option/button
                         Button("Add Task", systemImage: "plus") {
                             tasks.append(Task(name: ""))
                         }
+                        
                         .frame(height: 25)
                         .frame(width: 120)
                         .foregroundColor(.black)
                         .background(Rectangle().fill(Color(red: 0.58, green: 0.78, blue: 0.675)))
                         .cornerRadius(8)
                         .opacity(0.7)
+                        .frame(maxWidth: .infinity, alignment: .center)
                     }
                     .padding()
                 }
@@ -154,14 +149,21 @@ struct ContentView: View {
                 .padding(.horizontal, 20)
             }
         }
+        .onAppear {
+            loadTasks()
+        }
+        .onChange(of: tasks) { _ in
+            saveTasks()
+        }
         .onReceive(timer) { _ in
             if timerRunning {
                 if timeRemaining > 0 {
                     timeRemaining -= 1
 
-                    // Show text box at minute 12–13
-                    let secondsPassed = 730 // Replace with actual logic if needed
-                    if secondsPassed > 720 && secondsPassed < 780 {
+                    // Optional dynamic message range (e.g., minute 12-13)
+                    let totalDuration = onBreak ? 5 * 60 : 25 * 60
+                    let secondsElapsed = totalDuration - timeRemaining
+                    if secondsElapsed >= 60 && secondsElapsed <= 1440 {
                         showBox = true
                     } else {
                         showBox = false
@@ -170,17 +172,14 @@ struct ContentView: View {
                 } else {
                     playSound()
                     timerRunning = false
+
                     if !onBreak {
                         onBreak = true
                         timeRemaining = 5 * 60
-
-                        // Stop animation on break frame
                         sceneHolder.scene.stopAnimationAtBreakFrame()
                     } else {
                         onBreak = false
                         timeRemaining = 25 * 60
-
-                        // Resume animation for work time
                         sceneHolder.scene.startAnimation()
                     }
                 }
@@ -188,7 +187,7 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Utility Functions
+    // sounds
 
     func formatTime(seconds: Int) -> String {
         let minutes = seconds / 60
@@ -214,4 +213,22 @@ struct ContentView: View {
     func skipTimer() {
         timeRemaining = 0
     }
+
+    func saveTasks() {
+        if let encoded = try? JSONEncoder().encode(tasks) {
+            UserDefaults.standard.set(encoded, forKey: "SavedTasks")
+        }
+    }
+
+    func loadTasks() {
+        if let savedData = UserDefaults.standard.data(forKey: "SavedTasks") {
+            if let decoded = try? JSONDecoder().decode([Task].self, from: savedData) {
+                tasks = decoded
+            }
+        }
+    }
+}
+
+#Preview {
+    ContentView()
 }
