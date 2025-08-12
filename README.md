@@ -31,7 +31,7 @@ We ideated and designed our app together (color scheme, wireframe). We used Xcod
 1. Clone this Repository
   - you can download ZIP and unzip it in Finder
     <p align="left">
-      <img width="426" height="324" alt="image" src="https://github.com/user-attachments/assets/a1497b8e-f877-462a-87d3-750c8dbd28a7" />
+      <img width="326" height="224" alt="image" src="https://github.com/user-attachments/assets/a1497b8e-f877-462a-87d3-750c8dbd28a7" />
     </p>
 2. Open in Xcode
   - open Xcode and open the folder you downloaded above
