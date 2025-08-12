@@ -1,4 +1,4 @@
-<img width="526" height="424" alt="image" src="https://github.com/user-attachments/assets/04f4dda4-b64d-4269-90c7-bd92a94c16d1" /># PomoTracker
+# PomoTracker
 PomoTracker is a productivity app to help people, especially students, get things done on time and stay on top of their tasks. It includes a timer, to-do list, and a motivational animated bunny.
 
 In today’s world, people are often overwhelmed with the amount of work they have to complete, and it doesn’t help that social media and phones are there to muck up any attempts at time management, causing stress and anxiety (we would know).
@@ -30,7 +30,7 @@ We ideated and designed our app together (color scheme, wireframe). We used Xcod
 ##set up the project locally and test it yourself
 1. Clone this Repository
   - you can download ZIP and unzip it in Finder
-    <img width="526" height="424" alt="image" src="https://github.com/user-attachments/assets/a1497b8e-f877-462a-87d3-750c8dbd28a7" />
+    <img width="406" height="304" alt="image" src="https://github.com/user-attachments/assets/a1497b8e-f877-462a-87d3-750c8dbd28a7" />
 2. Open in Xcode
   - open Xcode and open the folder you downloaded above
 3. run the app and test it out in the simulator
