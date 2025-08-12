@@ -1,4 +1,4 @@
-# pomotracker
+# PomoTracker
 A productivity app that includes a timer, to-do list, and an animated bunny.
 
 In today’s world, people are often overwhelmed with the amount of work they have to complete, and it doesn’t help that social media and phones are there to muck up any attempts at time management, causing stress and anxiety (we would know).
