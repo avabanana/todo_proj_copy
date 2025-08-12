@@ -27,7 +27,7 @@ We ideated and designed our app together (color scheme, wireframe). We used Xcod
 - adding a lil “ding~” for an alarm (it’s so satisfying to hear!)
 - finishing a functional app!
 
-##set up the project locally and test it yourself
+## set up the project locally and test it yourself
 1. Clone this Repository
   - you can download ZIP and unzip it in Finder
     <p align="left">
