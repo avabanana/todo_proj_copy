@@ -6,19 +6,18 @@ Pomotracker is an app that provides a pomodoro timer (25 minutes of studying, 5 
 
 ## process
 We ideated and designed our app together (color scheme, wireframe). We used Xcode and Swift to code our app. We all started off in Content View decided the basic layout of our view before branching out into other files. Then, we began working on our individually designated parts of the app.
-- timer & buttons
-
-  pomodoro countdown timer (25 min & 5 min break)
-  buttons:
-  - pause/start
-  - reset
-  - skip
-  “ding~” alarm when timer is done
+- timer & buttons:
+  - pomodoro countdown timer (25 min & 5 min break)
+  - buttons:
+    - pause/start
+    - reset
+    - skip
+  - “ding~” alarm when timer is done
 - to-do list
-  space to add, edit, and check off tasks (delete task)
+  - space to add, edit, and check off tasks (delete task)
 - motivational animated bunny
-  will leave a motivational message if you work for longer than a minute 
-  takes breaks with you
+  - will leave a motivational message if you work for longer than a minute 
+  - takes breaks with you
 
 ## Challenges & Accomplishments
 - resolving merge conflicts was  p a i n f u l (mostly bc everything was in the same view)
