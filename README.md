@@ -1,5 +1,5 @@
 # PomoTracker
-A productivity app that includes a timer, to-do list, and an animated bunny.
+PomoTracker is a productivity app to help people, especially students, get things done on time and stay on top of their tasks. It includes a timer, to-do list, and an animated bunny.
 
 In today’s world, people are often overwhelmed with the amount of work they have to complete, and it doesn’t help that social media and phones are there to muck up any attempts at time management, causing stress and anxiety (we would know).
 Pomotracker is an app that provides a pomodoro timer (25 minutes of studying, 5 minute breaks), where students will not only develop good time management, but will begin to see studying and working as something more than a chore. 
